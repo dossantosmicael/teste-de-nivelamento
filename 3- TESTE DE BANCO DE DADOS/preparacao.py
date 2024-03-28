@@ -8,7 +8,7 @@ def baixar_arquivos_ansi_2_anos():
     base_url = "https://dadosabertos.ans.gov.br/FTP/PDA/demonstracoes_contabeis/"
     
     # Diretório de destino onde os arquivos serão salvos
-    destino = r"C:\Users\micael.santos\Documents\GitHub\teste-de-nivelamento\3- TESTE DE BANCO DE DADOS\DADOS"
+    destino = r"D:\GitHubRepositorio\teste-de-nivelamento\3- TESTE DE BANCO DE DADOS\DADOS"
     
     # Obtém o ano atual
     ano_atual = datetime.now().year
@@ -47,7 +47,7 @@ def baixar_dados_cadastrais_operadoras():
     url = "https://dados.gov.br/dataset/59eae6e9-7232-4e13-bbf3-00fdd040d711/resource/eb49bf90-78fe-4df3-a2ed-f1819fdac8f5/download/cadop.csv"
     
     # Diretório de destino onde o arquivo será salvo
-    destino = r"C:\Users\micael.santos\Documents\GitHub\teste-de-nivelamento\3- TESTE DE BANCO DE DADOS\DADOS\cadop.csv"
+    destino = r"D:\GitHubRepositorio\teste-de-nivelamento\3- TESTE DE BANCO DE DADOS\DADOS\cadop.csv"
     
     # Mensagem de depuração para indicar que o arquivo está sendo baixado
     print(f"Tentando baixar o arquivo de URL: {url}")
