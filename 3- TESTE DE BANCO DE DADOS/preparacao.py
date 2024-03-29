@@ -1,44 +1,46 @@
 import wget
 import os
-from datetime import datetime, timedelta
+import zipfile
+from ftplib import FTP
 
-# Função para baixar os arquivos dos últimos 2 anos do repositório da ANS
-def baixar_arquivos_ansi_2_anos():
-    # URL base onde os arquivos estão localizados
-    base_url = "https://dadosabertos.ans.gov.br/FTP/PDA/demonstracoes_contabeis/"
+# Função para baixar os arquivos dos anos 2022 e 2023 do repositório da ANS via FTP
+def baixar_arquivos_ans():
+    # Diretórios dos anos 2022 e 2023
+    anos = ["2022", "2023"]
     
     # Diretório de destino onde os arquivos serão salvos
     destino = r"D:\GitHubRepositorio\teste-de-nivelamento\3- TESTE DE BANCO DE DADOS\DADOS"
     
-    # Obtém o ano atual
-    ano_atual = datetime.now().year
-    
-    # Itera sobre os anos dos últimos 2 anos
-    for ano in range(ano_atual - 2, ano_atual):
-        # Itera sobre os meses (de 1 a 12)
-        for mes in range(1, 13):
-            # Cria uma data de referência para o ano e mês atual
-            data_referencia = datetime(ano, mes, 1)
-            
-            # Formata o nome do arquivo conforme o padrão fornecido
-            nome_arquivo = f"{data_referencia.strftime('%Y%m')}_DemonstrativoFinanceiroOperadoras.csv.zip"
-            
-            # Monta a URL completa do arquivo
-            url_arquivo = base_url + nome_arquivo
-            
-            # Mensagem de depuração para indicar qual arquivo está sendo baixado
-            print(f"Tentando baixar o arquivo de URL: {url_arquivo}")
-            
+    # Conectar ao servidor FTP
+    with FTP("dadosabertos.ans.gov.br") as ftp:
+        ftp.login()  # Login anônimo
+
+        for ano in anos:
             try:
-                # Tenta baixar o arquivo usando wget
-                wget.download(url_arquivo, out=destino)
-                
-                # Mensagem indicando que o arquivo foi baixado com sucesso
-                print(f"Arquivo baixado com sucesso para: {destino}")
+                # Entrar no diretório do ano
+                ftp.cwd(f"/FTP/PDA/demonstracoes_contabeis/{ano}/")
+
+                # Listar os arquivos no diretório
+                arquivos = ftp.nlst()
+
+                # Baixar os arquivos ZIP
+                for arquivo in arquivos:
+                    if arquivo.endswith(".zip"):
+                        with open(os.path.join(destino, arquivo), "wb") as f:
+                            ftp.retrbinary(f"RETR {arquivo}", f.write)
+                        print(f"Arquivo ZIP baixado com sucesso: {arquivo}")
+                        
+                        # Descompactar o arquivo ZIP
+                        with zipfile.ZipFile(os.path.join(destino, arquivo), 'r') as zip_ref:
+                            zip_ref.extractall(destino)
+                        # Excluir o arquivo ZIP
+                        os.remove(os.path.join(destino, arquivo))
+                        print(f"Arquivo ZIP descompactado com sucesso: {arquivo}")
+                    else:
+                        print(f"Arquivo {arquivo} não é um arquivo ZIP.")
             except Exception as e:
-                # Em caso de falha ao baixar o arquivo, imprime uma mensagem de erro
-                print("Falha ao baixar o arquivo.")
-                print(f"URL utilizada: {url_arquivo}")
+                # Em caso de falha ao baixar os arquivos, imprime uma mensagem de erro
+                print(f"Falha ao baixar/arquivos do diretório: {ano}")
                 print(f"Erro: {e}")
 
 # Função para baixar os dados cadastrais das operadoras da ANS
@@ -65,5 +67,5 @@ def baixar_dados_cadastrais_operadoras():
         print(f"Erro: {e}")
 
 # Chamar as funções para baixar os arquivos
-baixar_arquivos_ansi_2_anos()
+baixar_arquivos_ans()
 baixar_dados_cadastrais_operadoras()
