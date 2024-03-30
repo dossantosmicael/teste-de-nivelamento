@@ -3,15 +3,15 @@ import os
 import zipfile
 from ftplib import FTP
 
-# Função para baixar os arquivos dos anos 2022 e 2023 do repositório da ANS via FTP
+# Função para baixar os arquivos dos ultimos anos do repositório da ANS via FTP
 def baixar_arquivos_ans():
-    # Diretórios dos anos 2022 e 2023
+    
     anos = ["2022", "2023"]
     
     # Diretório de destino onde os arquivos serão salvos
     destino = r"D:\GitHubRepositorio\teste-de-nivelamento\3- TESTE DE BANCO DE DADOS\DADOS"
     
-    # Conectar ao servidor FTP
+    # Conecta ao servidor FTP
     with FTP("dadosabertos.ans.gov.br") as ftp:
         ftp.login()  # Login anônimo
 
@@ -33,6 +33,7 @@ def baixar_arquivos_ans():
                         # Descompactar o arquivo ZIP
                         with zipfile.ZipFile(os.path.join(destino, arquivo), 'r') as zip_ref:
                             zip_ref.extractall(destino)
+                        
                         # Excluir o arquivo ZIP
                         os.remove(os.path.join(destino, arquivo))
                         print(f"Arquivo ZIP descompactado com sucesso: {arquivo}")

@@ -1,3 +1,4 @@
+-- Active: 1711734655493@@127.0.0.1@3306@teste
 -- Query para encontrar as 10 operadoras com maiores despesas no último trimestre
 SELECT operadoras.razao_social, SUM(eventos_sinistros.valor) AS total_despesas
 FROM eventos_sinistros
